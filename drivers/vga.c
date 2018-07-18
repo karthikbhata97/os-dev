@@ -1,5 +1,6 @@
 #include "vga.h"
 #include "ports.h"
+#include "../kernel/utils.h"
 
 
 #define get_offset(row, col) (row*MAX_COLUMNS + col) * 2
@@ -114,13 +115,8 @@ void copy_lines(int source_r, int dest_r) {
 	char *video_mem = (char *)VIDEO_ADDRESS;
 	int i;
 
-	for (i=0;i<column_end;i++) {
-		video_mem[dest_off] = video_mem[source_off];
-		video_mem[dest_off+1] = video_mem[source_off+1];
+	memory_copy(source_off+video_mem, dest_off+video_mem, MAX_COLUMNS*2);
 	
-		source_off+=2;
-		dest_off+=2;
-	}
 }
 
 void clear_line(int row) {
