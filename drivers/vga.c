@@ -2,7 +2,7 @@
 #include "ports.h"
 
 
-#define get_offset(row, col) (row*MAX_COLUMNS + col) * 2;
+#define get_offset(row, col) (row*MAX_COLUMNS + col) * 2
 
 #define get_offset_row(offset) ((offset/2)/MAX_COLUMNS)
 
@@ -13,6 +13,9 @@
 int get_cursor_offset();
 void set_cursor_offset(int);
 int print_char(char, int, int, int);
+
+void copy_lines(int, int);
+void clear_line(int);
 
 int get_cursor_offset() {
 	int position = 0;
@@ -51,7 +54,6 @@ void set_cursor_offset(int offset) {
 void kprint_at(char *message, int row, int column) {
 
 	int iter=0, offset=0;
-	unsigned char * vide_mem = (unsigned char *) VIDEO_ADDRESS;
 
 	for (iter=0; message[iter]; iter++) {
 		offset = print_char(message[iter], row, column, 0);
@@ -94,4 +96,49 @@ int print_char(char c, int row, int col, int attr) {
 
 	set_cursor_offset(offset);
 	return offset;
+}
+
+
+void copy_lines(int source_r, int dest_r) {
+	int source_off = get_offset(source_r, 0);
+	int dest_off = get_offset(dest_r, 0);
+
+	int column_end = MAX_COLUMNS;
+	char *video_mem = (char *)VIDEO_ADDRESS;
+	int i;
+
+	for (i=0;i<column_end;i++) {
+		video_mem[dest_off] = video_mem[source_off];
+		video_mem[dest_off+1] = video_mem[source_off+1];
+	
+		source_off+=2;
+		dest_off+=2;
+	}
+}
+
+void clear_line(int row) {
+	int offset = get_offset(row, 0);
+	int i;
+	char * video_mem = (char *)VIDEO_ADDRESS;
+	for (i=0;i<MAX_COLUMNS;i++) {
+		video_mem[offset] = 0;
+		video_mem[offset+1] = 0;
+		offset += 2;
+	}
+}
+
+void scroll(int nlines) {
+	int i;
+	int offset = get_offset((MAX_ROWS-nlines), 0);
+
+	for (i=nlines;i<MAX_ROWS;i++) {
+		copy_lines(i, i-nlines);
+	}
+
+	for (i=MAX_ROWS-nlines;i<MAX_ROWS;i++) {
+		clear_line(i);
+	}
+
+	set_cursor_offset(offset);
+	return;
 }
