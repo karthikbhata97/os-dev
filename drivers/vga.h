@@ -9,4 +9,4 @@
 
 void kprint_at(char *, int, int);
 void kprint(char *);
-void scroll(int);
+int scroll(int);

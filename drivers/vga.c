@@ -94,6 +94,13 @@ int print_char(char c, int row, int col, int attr) {
 	}
 	offset += 2;
 
+	row = get_offset_row(offset);
+	col = get_offset_column(offset);
+
+	if (row==MAX_ROWS && col==0) {
+		offset = scroll(1);
+	}
+
 	set_cursor_offset(offset);
 	return offset;
 }
@@ -127,7 +134,7 @@ void clear_line(int row) {
 	}
 }
 
-void scroll(int nlines) {
+int scroll(int nlines) {
 	int i;
 	int offset = get_offset((MAX_ROWS-nlines), 0);
 
@@ -140,5 +147,5 @@ void scroll(int nlines) {
 	}
 
 	set_cursor_offset(offset);
-	return;
+	return offset;
 }
