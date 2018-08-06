@@ -1,7 +1,8 @@
-void memory_copy(char * source, char *dest, int nbytes) {
-    int i;
-    for (i=0;i<nbytes;i++) {
-        *(dest + i) = *(source + i);
-    }
-    return;
-} 
+#ifndef UTILS_H
+#define UTILS_H
+
+
+void memory_copy(char *, char *, int);
+void int_to_ascii(int, char *); 
+
+#endif

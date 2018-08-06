@@ -1,10 +1,10 @@
 # $^ all dependencies
 # $< first dependencies
 # $@ target file
-C_SOUCES = $(wildcard kernel/*.c drivers/*.c)
-HEADERS = $(wildcard kernel/*.h drivers/*.h)
+C_SOUCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c)
+HEADERS = $(wildcard kernel/*.h drivers/*.h cpu/*.c)
 
-OBJ = ${C_SOUCES:.c=.o}
+OBJ = ${C_SOUCES:.c=.o cpu/interrupt.o}
 
 CC = /usr/local/i386elfgcc/bin/i386-elf-gcc
 LD = /usr/local/i386elfgcc/bin/i386-elf-ld
